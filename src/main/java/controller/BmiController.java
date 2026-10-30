@@ -1,57 +1,90 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package controller;
 
+import model.BmiCalc;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import java.text.NumberFormat;
-import java.util.Locale;
-import javafx.scene.control.ComboBox;
-import model.BmiCalculating;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class BmiController {
 
-    // Menghubungkan ID komponen dari FXML
-    @FXML    private TextField tfNama;
+    @FXML private TextArea txtHasil;
+    @FXML private TextField txtNama;
+    @FXML private TextField txtBerat;
+    @FXML private TextField txtTinggi;
+    @FXML private Button btnBoys;
+    @FXML private Button btnGurls; // Disamakan pakai 'u' sesuai FXML kamu
 
-    @FXML    private TextField tfBerat;
+    private String selectedGender = "GIRLS";
 
-    @FXML    private TextField tfTinggi;
+    // Style CSS saat tombol aktif vs redup
+ // Tambahkan -fx-font-family: 'Lucida Handwriting'; di semua variabel style tombol
+    private final String BOYS_ACTIVE = "-fx-background-color: #253A82; -fx-text-fill: #f5f1aa; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-font-family: 'Lucida Handwriting'; -fx-font-size: 12px; -fx-font-weight: bold;";
+    private final String BOYS_INACTIVE = "-fx-background-color: #6c7ca8; -fx-text-fill: #dddddd; -fx-border-color: transparent; -fx-font-family: 'Lucida Handwriting'; -fx-font-size: 12px;";
 
-    @FXML    private Label lblHasil;
+    private final String GIRLS_ACTIVE = "-fx-background-color: #991e5a; -fx-text-fill: #f5f1aa; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-font-family: 'Lucida Handwriting'; -fx-font-size: 12px; -fx-font-weight: bold;";
+    private final String GIRLS_INACTIVE = "-fx-background-color: #b86b93; -fx-text-fill: #dddddd; -fx-border-color: transparent; -fx-font-family: 'Lucida Handwriting'; -fx-font-size: 12px;";
 
-    // Handler yang dipanggil saat tombol Hitung diklik
     @FXML
-    private void Calculating() {
+    public void initialize() {
+        updateGenderButtons();
+    }
+
+    @FXML
+    private void handleSelectBoys(ActionEvent event) {
+        selectedGender = "BOYS";
+        updateGenderButtons();
+    }
+
+    @FXML
+    private void handleSelectGirls(ActionEvent event) {
+        selectedGender = "GIRLS";
+        updateGenderButtons();
+    }
+
+    private void updateGenderButtons() {
+        if ("BOYS".equalsIgnoreCase(selectedGender)) {
+            btnBoys.setStyle(BOYS_ACTIVE);
+            btnGurls.setStyle(GIRLS_INACTIVE);
+        } else {
+            btnBoys.setStyle(BOYS_INACTIVE);
+            btnGurls.setStyle(GIRLS_ACTIVE);
+        }
+    }
+
+    @FXML
+    private void handleCalculate(ActionEvent event) {
         try {
-            String nama = tfNama.getText().trim();
+            String nama = txtNama.getText().trim();
             if (nama.isEmpty()) {
-                lblHasil.setText("Status: Nama tidak boleh kosong!");
+                txtHasil.setText("hi sweetie!\nplease enter your name first ✨");
                 return;
             }
 
-            // Konversi teks input ke double
-            double berat = Double.parseDouble(tfBerat.getText());
-            double tinggi = Double.parseDouble(tfTinggi.getText());
+            double berat = Double.parseDouble(txtBerat.getText());
+            double tinggi = Double.parseDouble(txtTinggi.getText());
 
-            // Instansiasi objek Model
-            BmiCalculating kal = new BmiCalculating(nama, berat, tinggi);
+            BmiCalc calc = new BmiCalc(nama, selectedGender, berat, tinggi);
+            double skor = calc.hitungBMI();
 
-            // Tampilkan hasil kalkulasi ke GUI
-            lblHasil.setText(String.format("Halo %s,\nNilai BMI: %.2f\nKategori: %s",
-                    kal.getNama(),
-                    kal.HitungBMI(),
-                    kal.getKategori()
-                )
+            String sapaan = selectedGender.equalsIgnoreCase("GIRLS") ? "hi gurls!" : "hi boys!";
+
+            String hasilTeks = String.format(
+                "%s\n%s your weight is %.1f\nits %s!\n%s",
+                sapaan,
+                calc.getNama(),
+                skor,
+                calc.getKategoriStatus(),
+                calc.getPesanMotivasi()
             );
 
+            txtHasil.setText(hasilTeks);
+
         } catch (NumberFormatException e) {
-            lblHasil.setText("Status: Berat dan tinggi harus berupa angka yang valid!");
+            txtHasil.setText("oops!\nplease enter valid numbers for weight & height!");
         } catch (IllegalArgumentException e) {
-            lblHasil.setText("Status: " + e.getMessage());
+            txtHasil.setText("error!\n" + e.getMessage());
         }
     }
 }

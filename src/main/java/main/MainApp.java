@@ -9,13 +9,14 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        // Memuat berkas desain visual dari SceneBuilder
-        Parent root = FXMLLoader.load(getClass().getResource("/com/bmiapp/view/BMIView.fxml"));
+    public void start(Stage stage) throws Exception {
+        // Pemanggilan langsung ke akar folder resources
+        Parent root = FXMLLoader.load(getClass().getResource("/BmiCalView.fxml"));
         
-        primaryStage.setTitle("BMI Calculator - JavaFX GUI");
-        primaryStage.setScene(new Scene(root, 380, 420));
-        primaryStage.show();
+        Scene scene = new Scene(root);
+        stage.setTitle("Y2K BMI Calculator");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public static void main(String[] args) {
