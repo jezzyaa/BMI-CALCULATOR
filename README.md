@@ -32,7 +32,6 @@ bmiCal/
 │       └── resources/
 │           └── BmiCalView.fxml             # Tata letak UI (JavaFX FXML)
 ├
-│                                           # Log refleksi pengerjaan mandiri
 ├── .gitignore                              # Konfigurasi pengabaian file Git
 ├── pom.xml                                 # Dependensi & konfigurasi Maven
 └── README.md                               # Dokumentasi proyek
